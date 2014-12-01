@@ -1,5 +1,5 @@
 //
-//  BPCompatibleActivityController.swift
+//  BPCompatibleAlertController.swift
 //  RelSci
 //
 //  Created by Bay Phillips on 12/1/14.
