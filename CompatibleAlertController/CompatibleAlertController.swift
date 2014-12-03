@@ -1,5 +1,5 @@
 //
-//  BPCompatibleAlertController.swift
+//  CompatibleAlertController.swift
 //  RelSci
 //
 //  Created by Bay Phillips on 12/1/14.
@@ -9,20 +9,20 @@
 import Foundation
 import UIKit
 
-public enum BPCompatibleAlertControllerStyle {
+public enum CompatibleAlertControllerStyle {
     case Actionsheet
     case Alert
 }
 
 @objc(BPCompatibleAlertController)
-public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
+public class CompatibleAlertController : NSObject, UIAlertViewDelegate {
     let title: String?
     let message: String?
-    let alertStyle: BPCompatibleAlertControllerStyle
-    private var actions: [BPCompatibleAlertAction]
+    let alertStyle: CompatibleAlertControllerStyle
+    private var actions: [CompatibleAlertAction]
     private var alertControllerStyle: UIAlertControllerStyle {
         get {
-            return alertStyle == BPCompatibleAlertControllerStyle.Actionsheet
+            return alertStyle == CompatibleAlertControllerStyle.Actionsheet
                 ? UIAlertControllerStyle.ActionSheet
                 : UIAlertControllerStyle.Alert
         }
@@ -34,22 +34,22 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
         }
     }
     
-    public init(title: String?, message: String?, alertStyle: BPCompatibleAlertControllerStyle) {
+    public init(title: String?, message: String?, alertStyle: CompatibleAlertControllerStyle) {
         self.title = title
         self.message = message
         self.alertStyle = alertStyle
-        self.actions = [BPCompatibleAlertAction]()
+        self.actions = [CompatibleAlertAction]()
     }
     
-    class func alertControllerWithTitle(title: String?, message: String?) -> BPCompatibleAlertController {
-        return BPCompatibleAlertController(title: title, message: message, alertStyle: BPCompatibleAlertControllerStyle.Alert)
+    class func alertControllerWithTitle(title: String?, message: String?) -> CompatibleAlertController {
+        return CompatibleAlertController(title: title, message: message, alertStyle: CompatibleAlertControllerStyle.Alert)
     }
     
-    class func actionSheetControllerWithTitle(title: String?, message: String?) -> BPCompatibleAlertController {
-        return BPCompatibleAlertController(title: title, message: message, alertStyle: BPCompatibleAlertControllerStyle.Actionsheet)
+    class func actionSheetControllerWithTitle(title: String?, message: String?) -> CompatibleAlertController {
+        return CompatibleAlertController(title: title, message: message, alertStyle: CompatibleAlertControllerStyle.Actionsheet)
     }
     
-    public func addAction(action: BPCompatibleAlertAction) -> Void {
+    public func addAction(action: CompatibleAlertAction) -> Void {
         actions.append(action)
     }
     
@@ -65,11 +65,11 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
                 completion()
             })
         } else {
-            var actionsCopy:[BPCompatibleAlertAction] = actions
-            var cancelAction: BPCompatibleAlertAction?
+            var actionsCopy:[CompatibleAlertAction] = actions
+            var cancelAction: CompatibleAlertAction?
             var index = 0
             for action in actions {
-                if action.actionStyle == BPCompatibleAlertActionStyle.Cancel {
+                if action.actionStyle == CompatibleAlertActionStyle.Cancel {
                     cancelAction = action
                     actionsCopy.removeAtIndex(index)
                     break
@@ -86,7 +86,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     }
     
     public func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        let action = self.actions[buttonIndex] as BPCompatibleAlertAction
+        let action = self.actions[buttonIndex] as CompatibleAlertAction
         action.handler(action)
     }
 }

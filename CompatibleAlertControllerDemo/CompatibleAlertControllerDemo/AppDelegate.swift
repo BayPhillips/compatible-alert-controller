@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  BPCompatibleAlertControllerDemo
+//  CompatibleAlertControllerDemo
 //
 //  Created by Bay Phillips on 12/1/14.
 //  Copyright (c) 2014 Relationship Science LLC. All rights reserved.
