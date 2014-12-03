@@ -18,22 +18,21 @@ public enum BPCompatibleAlertActionStyle {
 @objc(BPCompatibleAlertAction)
 public class BPCompatibleAlertAction {
     public let title: String?
+    public let actionStyle: BPCompatibleAlertActionStyle
+    public let handler: ((BPCompatibleAlertAction!) -> Void)!
     public var enabled: Bool
-    public var actualAlertActionStyle: UIAlertActionStyle {
+    
+    public var alertActionStyle: UIAlertActionStyle {
         get {
             if self.actionStyle == BPCompatibleAlertActionStyle.Cancel {
                 return UIAlertActionStyle.Cancel
-            }
-            else if self.actionStyle == BPCompatibleAlertActionStyle.Destructive {
+            } else if self.actionStyle == BPCompatibleAlertActionStyle.Destructive {
                 return UIAlertActionStyle.Destructive
-            }
-            else {
+            } else {
                 return UIAlertActionStyle.Default
             }
         }
     }
-    public let handler: ((BPCompatibleAlertAction!) -> Void)!
-    let actionStyle: BPCompatibleAlertActionStyle
     
     public init(title: String?, actionStyle: BPCompatibleAlertActionStyle, handler: ((BPCompatibleAlertAction!) -> Void)!) {
         self.title = title

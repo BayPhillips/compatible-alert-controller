@@ -19,7 +19,20 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     let title: String?
     let message: String?
     let alertStyle: BPCompatibleAlertControllerStyle
-    var actions: [BPCompatibleAlertAction]
+    private var actions: [BPCompatibleAlertAction]
+    private var alertControllerStyle: UIAlertControllerStyle {
+        get {
+            return alertStyle == BPCompatibleAlertControllerStyle.Actionsheet
+                ? UIAlertControllerStyle.ActionSheet
+                : UIAlertControllerStyle.Alert
+        }
+    }
+    private var alertViewStyle: UIAlertViewStyle {
+        get {
+            // TODO: Handle all styles
+            return UIAlertViewStyle.Default
+        }
+    }
     
     public init(title: String?, message: String?, alertStyle: BPCompatibleAlertControllerStyle) {
         self.title = title
@@ -37,26 +50,25 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     }
     
     public func addAction(action: BPCompatibleAlertAction) -> Void {
-        self.actions.append(action)
+        actions.append(action)
     }
     
     public func presentFrom(viewController: UIViewController!, animated: Bool, completion: (() -> Void)!) {
         if let checkCompatibility: AnyClass = NSClassFromString("UIAlertController") {
-            let alertController = UIAlertController(title: self.title, message: self.message, preferredStyle: self.alertStyle == BPCompatibleAlertControllerStyle.Actionsheet ? UIAlertControllerStyle.ActionSheet : UIAlertControllerStyle.Alert)
-            for action in self.actions {
-                alertController.addAction(UIAlertAction(title: action.title!, style: action.actualAlertActionStyle, handler: { (alertAction) -> Void in
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: alertControllerStyle)
+            for action in actions {
+                alertController.addAction(UIAlertAction(title: action.title!, style: action.alertActionStyle, handler: { (alertAction) -> Void in
                     action.handler(action)
                 }))
             }
             viewController.presentViewController(alertController, animated: animated, completion: { () -> Void in
                 completion()
             })
-        }
-        else {
-            var actionsCopy:[BPCompatibleAlertAction] = self.actions
+        } else {
+            var actionsCopy:[BPCompatibleAlertAction] = actions
             var cancelAction: BPCompatibleAlertAction?
             var index = 0
-            for action in self.actions {
+            for action in actions {
                 if action.actionStyle == BPCompatibleAlertActionStyle.Cancel {
                     cancelAction = action
                     actionsCopy.removeAtIndex(index)
@@ -64,7 +76,8 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
                 }
                 index++
             }
-            let alertView = UIAlertView(title: self.title, message: self.message, delegate: self, cancelButtonTitle: cancelAction?.title)
+            let alertView = UIAlertView(title: title, message: message, delegate: self, cancelButtonTitle: cancelAction?.title)
+            alertView.alertViewStyle = alertViewStyle
             for action in actionsCopy {
                 alertView.addButtonWithTitle(action.title!)
             }
