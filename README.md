@@ -33,3 +33,6 @@ The `CompatibleAlertController` and `CompatibleAlertAction` both have the "BP" p
 1. `CompatibleAlertController` currently doesn't support the different types of UIAlertView styles (with various form inputs) but can easily be extended to do all of it.
 2. You need to retain the `CompatibleAlertController` in iOS 7 otherwise when selecting a button from the `UIAlertView` you'll get an exception.
 3. Probably a lot more! PR's are welcome.
+
+##License##
+`CompatibleAlertController` is licensed under the MIT License. See LICENSE for details.

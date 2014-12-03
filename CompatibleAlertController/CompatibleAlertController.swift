@@ -34,6 +34,15 @@ public class CompatibleAlertController : NSObject, UIAlertViewDelegate {
         }
     }
     
+    /**
+        Creates an instance of CompatibleAlertController.
+        
+        :param: title The title of the alert shown.
+        :param: message The message shown for the alert below the title.
+        :param: alertStyle The style to be used when displaying the alert. Currently only supporting iOS 8.
+    
+        :returns: The created alert controller.
+    */
     public init(title: String?, message: String?, alertStyle: CompatibleAlertControllerStyle) {
         self.title = title
         self.message = message
@@ -41,18 +50,47 @@ public class CompatibleAlertController : NSObject, UIAlertViewDelegate {
         self.actions = [CompatibleAlertAction]()
     }
     
+    /**
+        Creates a CompatibleAlertController with a type of Alert.
+    
+        :param: title The title of the alert shown.
+        :param: message The message shown for the alert below the title.
+    
+    :   returns: The created alert controller.
+    */
     class func alertControllerWithTitle(title: String?, message: String?) -> CompatibleAlertController {
         return CompatibleAlertController(title: title, message: message, alertStyle: CompatibleAlertControllerStyle.Alert)
     }
     
+    /**
+        Creates a CompatibleAlertController with a type of ActionSheet.
+        
+        :param: title The title of the alert shown.
+        :param: message The message shown for the alert below the title.
+    
+        :returns: The created alert controller.
+    */
     class func actionSheetControllerWithTitle(title: String?, message: String?) -> CompatibleAlertController {
         return CompatibleAlertController(title: title, message: message, alertStyle: CompatibleAlertControllerStyle.Actionsheet)
     }
     
+    /**
+        Adds a button with a corresponding action to be executed upon pressing.
+        
+        :param: action The CompatibleAlertAction with set title and action block.
+    */
     public func addAction(action: CompatibleAlertAction) -> Void {
         actions.append(action)
     }
     
+    /**
+        Presents the CompatibleAlertController to the user in the passed in UIViewController. If iOS 7, will
+        disregard the viewController and simply show the UIAlertView.
+    
+        :param: viewController The UIViewController for the UIAlertController to be displayed to. Not used in iOS 7.
+        :param: animated Whether or not to animate the presentation.
+        :param: completion The completion block to be called when done presenting.
+    */
     public func presentFrom(viewController: UIViewController!, animated: Bool, completion: (() -> Void)!) {
         if let checkCompatibility: AnyClass = NSClassFromString("UIAlertController") {
             let alertController = UIAlertController(title: title, message: message, preferredStyle: alertControllerStyle)
@@ -85,6 +123,9 @@ public class CompatibleAlertController : NSObject, UIAlertViewDelegate {
         }
     }
     
+    /**
+        Used to handle iOS 7 UIAlertView delegate calls. Do not use.
+    */
     public func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
         let action = self.actions[buttonIndex] as CompatibleAlertAction
         action.handler(action)

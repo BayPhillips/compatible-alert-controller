@@ -19,6 +19,7 @@ class ViewController: UIViewController {
         // Initialize 
         alertController = CompatibleAlertController(title: "Alert Title", message: "Alert Message", alertStyle: CompatibleAlertControllerStyle.Alert)
         
+        var hi = CompatibleAlertAction.
         alertController?.addAction(CompatibleAlertAction.defaultActionWithTitle("Default", handler: { (action) -> Void in
             // Do something here
         }))
