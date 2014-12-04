@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  CompatibleAlertControllerDemo
+//  BPCompatibleAlertControllerDemo
 //
 //  Created by Bay Phillips on 12/1/14.
 //  Copyright (c) 2014 Relationship Science LLC. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-    var alertController: CompatibleAlertController?
+    var alertController: BPCompatibleAlertController?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,16 +17,15 @@ class ViewController: UIViewController {
         self.title = "Demo"
         
         // Initialize 
-        alertController = CompatibleAlertController(title: "Alert Title", message: "Alert Message", alertStyle: CompatibleAlertControllerStyle.Alert)
+        alertController = BPCompatibleAlertController(title: "Alert Title", message: "Alert Message", alertStyle: BPCompatibleAlertControllerStyle.Alert)
         
-        var hi = CompatibleAlertAction.
-        alertController?.addAction(CompatibleAlertAction.defaultActionWithTitle("Default", handler: { (action) -> Void in
+        alertController?.addAction(BPCompatibleAlertAction.defaultActionWithTitle("Default", handler: { (action) -> Void in
             // Do something here
         }))
-        alertController?.addAction(CompatibleAlertAction.cancelActionWithTitle("Cancel", handler: { (action) -> Void in
+        alertController?.addAction(BPCompatibleAlertAction.cancelActionWithTitle("Cancel", handler: { (action) -> Void in
             // Do something here
         }))
-        alertController?.addAction(CompatibleAlertAction.destructiveActionWithTItle("Desctructive", handler: { (action) -> Void in
+        alertController?.addAction(BPCompatibleAlertAction.destructiveActionWithTItle("Desctructive", handler: { (action) -> Void in
             // Do something here
         }))
         

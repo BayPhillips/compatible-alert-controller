@@ -10,9 +10,9 @@
 		61F82CEB1A2D30090015066C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F82CEA1A2D30090015066C /* AppDelegate.swift */; };
 		61F82CED1A2D30090015066C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F82CEC1A2D30090015066C /* ViewController.swift */; };
 		61F82CF21A2D30090015066C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61F82CF11A2D30090015066C /* Images.xcassets */; };
-		61F82D011A2D30090015066C /* CompatibleAlertControllerDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F82D001A2D30090015066C /* CompatibleAlertControllerDemoTests.swift */; };
-		61F82D121A2D34D80015066C /* CompatibleAlertAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F82D101A2D34D80015066C /* CompatibleAlertAction.swift */; };
-		61F82D131A2D34D80015066C /* CompatibleAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F82D111A2D34D80015066C /* CompatibleAlertController.swift */; };
+		61F82D011A2D30090015066C /* BPCompatibleAlertControllerDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F82D001A2D30090015066C /* BPCompatibleAlertControllerDemoTests.swift */; };
+		61F82D121A2D34D80015066C /* BPCompatibleAlertAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F82D101A2D34D80015066C /* BPCompatibleAlertAction.swift */; };
+		61F82D131A2D34D80015066C /* BPCompatibleAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F82D111A2D34D80015066C /* BPCompatibleAlertController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,16 +26,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		61F82CE51A2D30090015066C /* CompatibleAlertControllerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CompatibleAlertControllerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		61F82CE51A2D30090015066C /* BPCompatibleAlertControllerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BPCompatibleAlertControllerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		61F82CE91A2D30090015066C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		61F82CEA1A2D30090015066C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		61F82CEC1A2D30090015066C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		61F82CF11A2D30090015066C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		61F82CFA1A2D30090015066C /* CompatibleAlertControllerDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CompatibleAlertControllerDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		61F82CFA1A2D30090015066C /* BPCompatibleAlertControllerDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BPCompatibleAlertControllerDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		61F82CFF1A2D30090015066C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		61F82D001A2D30090015066C /* CompatibleAlertControllerDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompatibleAlertControllerDemoTests.swift; sourceTree = "<group>"; };
-		61F82D101A2D34D80015066C /* CompatibleAlertAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompatibleAlertAction.swift; sourceTree = "<group>"; };
-		61F82D111A2D34D80015066C /* CompatibleAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompatibleAlertController.swift; sourceTree = "<group>"; };
+		61F82D001A2D30090015066C /* BPCompatibleAlertControllerDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPCompatibleAlertControllerDemoTests.swift; sourceTree = "<group>"; };
+		61F82D101A2D34D80015066C /* BPCompatibleAlertAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BPCompatibleAlertAction.swift; sourceTree = "<group>"; };
+		61F82D111A2D34D80015066C /* BPCompatibleAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BPCompatibleAlertController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,8 +59,8 @@
 		61F82CDC1A2D30090015066C = {
 			isa = PBXGroup;
 			children = (
-				61F82CE71A2D30090015066C /* CompatibleAlertControllerDemo */,
-				61F82CFD1A2D30090015066C /* CompatibleAlertControllerDemoTests */,
+				61F82CE71A2D30090015066C /* BPCompatibleAlertControllerDemo */,
+				61F82CFD1A2D30090015066C /* BPCompatibleAlertControllerDemoTests */,
 				61F82CE61A2D30090015066C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -68,22 +68,22 @@
 		61F82CE61A2D30090015066C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				61F82CE51A2D30090015066C /* CompatibleAlertControllerDemo.app */,
-				61F82CFA1A2D30090015066C /* CompatibleAlertControllerDemoTests.xctest */,
+				61F82CE51A2D30090015066C /* BPCompatibleAlertControllerDemo.app */,
+				61F82CFA1A2D30090015066C /* BPCompatibleAlertControllerDemoTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		61F82CE71A2D30090015066C /* CompatibleAlertControllerDemo */ = {
+		61F82CE71A2D30090015066C /* BPCompatibleAlertControllerDemo */ = {
 			isa = PBXGroup;
 			children = (
-				61F82D0F1A2D34D80015066C /* CompatibleAlertController */,
+				61F82D0F1A2D34D80015066C /* BPCompatibleAlertController */,
 				61F82CEA1A2D30090015066C /* AppDelegate.swift */,
 				61F82CEC1A2D30090015066C /* ViewController.swift */,
 				61F82CF11A2D30090015066C /* Images.xcassets */,
 				61F82CE81A2D30090015066C /* Supporting Files */,
 			);
-			name = CompatibleAlertControllerDemo;
+			name = BPCompatibleAlertControllerDemo;
 			path = CompatibleAlertControllerDemo;
 			sourceTree = "<group>";
 		};
@@ -95,13 +95,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		61F82CFD1A2D30090015066C /* CompatibleAlertControllerDemoTests */ = {
+		61F82CFD1A2D30090015066C /* BPCompatibleAlertControllerDemoTests */ = {
 			isa = PBXGroup;
 			children = (
-				61F82D001A2D30090015066C /* CompatibleAlertControllerDemoTests.swift */,
+				61F82D001A2D30090015066C /* BPCompatibleAlertControllerDemoTests.swift */,
 				61F82CFE1A2D30090015066C /* Supporting Files */,
 			);
-			name = CompatibleAlertControllerDemoTests;
+			name = BPCompatibleAlertControllerDemoTests;
 			path = CompatibleAlertControllerDemoTests;
 			sourceTree = "<group>";
 		};
@@ -113,22 +113,22 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		61F82D0F1A2D34D80015066C /* CompatibleAlertController */ = {
+		61F82D0F1A2D34D80015066C /* BPCompatibleAlertController */ = {
 			isa = PBXGroup;
 			children = (
-				61F82D101A2D34D80015066C /* CompatibleAlertAction.swift */,
-				61F82D111A2D34D80015066C /* CompatibleAlertController.swift */,
+				61F82D101A2D34D80015066C /* BPCompatibleAlertAction.swift */,
+				61F82D111A2D34D80015066C /* BPCompatibleAlertController.swift */,
 			);
-			name = CompatibleAlertController;
-			path = ../../CompatibleAlertController;
+			name = BPCompatibleAlertController;
+			path = ../../BPCompatibleAlertController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		61F82CE41A2D30090015066C /* CompatibleAlertControllerDemo */ = {
+		61F82CE41A2D30090015066C /* BPCompatibleAlertControllerDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 61F82D041A2D30090015066C /* Build configuration list for PBXNativeTarget "CompatibleAlertControllerDemo" */;
+			buildConfigurationList = 61F82D041A2D30090015066C /* Build configuration list for PBXNativeTarget "BPCompatibleAlertControllerDemo" */;
 			buildPhases = (
 				61F82CE11A2D30090015066C /* Sources */,
 				61F82CE21A2D30090015066C /* Frameworks */,
@@ -138,14 +138,14 @@
 			);
 			dependencies = (
 			);
-			name = CompatibleAlertControllerDemo;
+			name = BPCompatibleAlertControllerDemo;
 			productName = CompatibleAlertControllerDemo;
-			productReference = 61F82CE51A2D30090015066C /* CompatibleAlertControllerDemo.app */;
+			productReference = 61F82CE51A2D30090015066C /* BPCompatibleAlertControllerDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		61F82CF91A2D30090015066C /* CompatibleAlertControllerDemoTests */ = {
+		61F82CF91A2D30090015066C /* BPCompatibleAlertControllerDemoTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 61F82D071A2D30090015066C /* Build configuration list for PBXNativeTarget "CompatibleAlertControllerDemoTests" */;
+			buildConfigurationList = 61F82D071A2D30090015066C /* Build configuration list for PBXNativeTarget "BPCompatibleAlertControllerDemoTests" */;
 			buildPhases = (
 				61F82CF61A2D30090015066C /* Sources */,
 				61F82CF71A2D30090015066C /* Frameworks */,
@@ -156,9 +156,9 @@
 			dependencies = (
 				61F82CFC1A2D30090015066C /* PBXTargetDependency */,
 			);
-			name = CompatibleAlertControllerDemoTests;
+			name = BPCompatibleAlertControllerDemoTests;
 			productName = CompatibleAlertControllerDemoTests;
-			productReference = 61F82CFA1A2D30090015066C /* CompatibleAlertControllerDemoTests.xctest */;
+			productReference = 61F82CFA1A2D30090015066C /* BPCompatibleAlertControllerDemoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -179,7 +179,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 61F82CE01A2D30090015066C /* Build configuration list for PBXProject "CompatibleAlertControllerDemo" */;
+			buildConfigurationList = 61F82CE01A2D30090015066C /* Build configuration list for PBXProject "BPCompatibleAlertControllerDemo" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -192,8 +192,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				61F82CE41A2D30090015066C /* CompatibleAlertControllerDemo */,
-				61F82CF91A2D30090015066C /* CompatibleAlertControllerDemoTests */,
+				61F82CE41A2D30090015066C /* BPCompatibleAlertControllerDemo */,
+				61F82CF91A2D30090015066C /* BPCompatibleAlertControllerDemoTests */,
 			);
 		};
 /* End PBXProject section */
@@ -223,8 +223,8 @@
 			files = (
 				61F82CED1A2D30090015066C /* ViewController.swift in Sources */,
 				61F82CEB1A2D30090015066C /* AppDelegate.swift in Sources */,
-				61F82D131A2D34D80015066C /* CompatibleAlertController.swift in Sources */,
-				61F82D121A2D34D80015066C /* CompatibleAlertAction.swift in Sources */,
+				61F82D131A2D34D80015066C /* BPCompatibleAlertController.swift in Sources */,
+				61F82D121A2D34D80015066C /* BPCompatibleAlertAction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,7 +232,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				61F82D011A2D30090015066C /* CompatibleAlertControllerDemoTests.swift in Sources */,
+				61F82D011A2D30090015066C /* BPCompatibleAlertControllerDemoTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,7 +241,7 @@
 /* Begin PBXTargetDependency section */
 		61F82CFC1A2D30090015066C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 61F82CE41A2D30090015066C /* CompatibleAlertControllerDemo */;
+			target = 61F82CE41A2D30090015066C /* BPCompatibleAlertControllerDemo */;
 			targetProxy = 61F82CFB1A2D30090015066C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -332,7 +332,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = CompatibleAlertControllerDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = CompatibleAlertControllerDemo;
+				PRODUCT_NAME = BPCompatibleAlertControllerDemo;
 			};
 			name = Debug;
 		};
@@ -342,7 +342,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = CompatibleAlertControllerDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = CompatibleAlertControllerDemo;
+				PRODUCT_NAME = BPCompatibleAlertControllerDemo;
 			};
 			name = Release;
 		};
@@ -360,7 +360,7 @@
 				);
 				INFOPLIST_FILE = CompatibleAlertControllerDemoTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = CompatibleAlertControllerDemoTests;
+				PRODUCT_NAME = BPCompatibleAlertControllerDemoTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CompatibleAlertControllerDemo.app/CompatibleAlertControllerDemo";
 			};
 			name = Debug;
@@ -375,7 +375,7 @@
 				);
 				INFOPLIST_FILE = CompatibleAlertControllerDemoTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = CompatibleAlertControllerDemoTests;
+				PRODUCT_NAME = BPCompatibleAlertControllerDemoTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CompatibleAlertControllerDemo.app/CompatibleAlertControllerDemo";
 			};
 			name = Release;
@@ -383,7 +383,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		61F82CE01A2D30090015066C /* Build configuration list for PBXProject "CompatibleAlertControllerDemo" */ = {
+		61F82CE01A2D30090015066C /* Build configuration list for PBXProject "BPCompatibleAlertControllerDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				61F82D021A2D30090015066C /* Debug */,
@@ -392,7 +392,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		61F82D041A2D30090015066C /* Build configuration list for PBXNativeTarget "CompatibleAlertControllerDemo" */ = {
+		61F82D041A2D30090015066C /* Build configuration list for PBXNativeTarget "BPCompatibleAlertControllerDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				61F82D051A2D30090015066C /* Debug */,
@@ -401,7 +401,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		61F82D071A2D30090015066C /* Build configuration list for PBXNativeTarget "CompatibleAlertControllerDemoTests" */ = {
+		61F82D071A2D30090015066C /* Build configuration list for PBXNativeTarget "BPCompatibleAlertControllerDemoTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				61F82D081A2D30090015066C /* Debug */,

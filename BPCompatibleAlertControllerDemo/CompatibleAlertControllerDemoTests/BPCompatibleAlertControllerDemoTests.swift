@@ -1,6 +1,6 @@
 //
-//  CompatibleAlertControllerDemoTests.swift
-//  CompatibleAlertControllerDemoTests
+//  BPCompatibleAlertControllerDemoTests.swift
+//  BPCompatibleAlertControllerDemoTests
 //
 //  Created by Bay Phillips on 12/1/14.
 //  Copyright (c) 2014 Relationship Science LLC. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import XCTest
 
-class CompatibleAlertControllerDemoTests: XCTestCase {
+class BPCompatibleAlertControllerDemoTests: XCTestCase {
     
     override func setUp() {
         super.setUp()

@@ -1,5 +1,5 @@
 //
-//  CompatibleAlertAction.swift
+//  BPCompatibleAlertAction.swift
 //  RelSci
 //
 //  Created by Bay Phillips on 12/1/14.
@@ -9,14 +9,14 @@
 import Foundation
 import UIKit
 
-public enum CompatibleAlertActionStyle {
+public enum BPCompatibleAlertActionStyle {
     case Default
     case Cancel
     case Destructive
 }
 
 @objc(BPCompatibleAlertAction)
-public class CompatibleAlertAction {
+public class BPCompatibleAlertAction {
     /**
         The title of the Action to be shown in the button.
     */
@@ -25,12 +25,12 @@ public class CompatibleAlertAction {
     /**
         The style of the button, depending on its type of action.
     */
-    public let actionStyle: CompatibleAlertActionStyle
+    public let actionStyle: BPCompatibleAlertActionStyle
     
     /**
         The handler to be called when the action/button is pressed.
     */
-    public let handler: ((CompatibleAlertAction!) -> Void)!
+    public let handler: ((BPCompatibleAlertAction!) -> Void)!
     
     /**
         Whether or not this action is actionable. Currently not supported.
@@ -42,9 +42,9 @@ public class CompatibleAlertAction {
     */
     public var alertActionStyle: UIAlertActionStyle {
         get {
-            if self.actionStyle == CompatibleAlertActionStyle.Cancel {
+            if self.actionStyle == BPCompatibleAlertActionStyle.Cancel {
                 return UIAlertActionStyle.Cancel
-            } else if self.actionStyle == CompatibleAlertActionStyle.Destructive {
+            } else if self.actionStyle == BPCompatibleAlertActionStyle.Destructive {
                 return UIAlertActionStyle.Destructive
             } else {
                 return UIAlertActionStyle.Default
@@ -53,7 +53,7 @@ public class CompatibleAlertAction {
     }
     
     /**
-        Creates an instance of CompatibleAlertAction.
+        Creates an instance of BPCompatibleAlertAction.
         
         :param: title The title of the button.
         :param: actionStyle The style of the button.
@@ -61,7 +61,7 @@ public class CompatibleAlertAction {
     
         :returns: The created action.
     */
-    public init(title: String?, actionStyle: CompatibleAlertActionStyle, handler: ((CompatibleAlertAction!) -> Void)!) {
+    public init(title: String?, actionStyle: BPCompatibleAlertActionStyle, handler: ((BPCompatibleAlertAction!) -> Void)!) {
         self.title = title
         self.actionStyle = actionStyle
         self.handler = handler
@@ -69,38 +69,38 @@ public class CompatibleAlertAction {
     }
     
     /**
-        Helper function to create an instance of CompatibleAlertAction with the type of Default.
+        Helper function to create an instance of BPCompatibleAlertAction with the type of Default.
     
         :param: title The title of the button.
         :param: handler The block to be called when the button is pressed.
     
         :returns: The created action.
     */
-    class func defaultActionWithTitle(title: String?, handler: ((CompatibleAlertAction!) -> Void)!) -> CompatibleAlertAction {
-        return CompatibleAlertAction(title: title, actionStyle: CompatibleAlertActionStyle.Default, handler: handler)
+    class func defaultActionWithTitle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)!) -> BPCompatibleAlertAction {
+        return BPCompatibleAlertAction(title: title, actionStyle: BPCompatibleAlertActionStyle.Default, handler: handler)
     }
     
     /**
-        Helper function to create an instance of CompatibleAlertAction with the type of Cancel.
+        Helper function to create an instance of BPCompatibleAlertAction with the type of Cancel.
         
         :param: title The title of the button.
         :param: handler The block to be called when the button is pressed.
     
         :returns: The created action.
     */
-    class func cancelActionWithTitle(title: String?, handler: ((CompatibleAlertAction!) -> Void)!) -> CompatibleAlertAction {
-        return CompatibleAlertAction(title: title, actionStyle: CompatibleAlertActionStyle.Cancel, handler: handler)
+    class func cancelActionWithTitle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)!) -> BPCompatibleAlertAction {
+        return BPCompatibleAlertAction(title: title, actionStyle: BPCompatibleAlertActionStyle.Cancel, handler: handler)
     }
     
     /**
-        Helper function to create an instance of CompatibleAlertAction with the type of Desctructive.
+        Helper function to create an instance of BPCompatibleAlertAction with the type of Desctructive.
         
         :param: title The title of the button.
         :param: handler The block to be called when the button is pressed.
     
         :returns: The created action.
     */
-    class func destructiveActionWithTItle(title: String?, handler: ((CompatibleAlertAction!) -> Void)!) -> CompatibleAlertAction {
-        return CompatibleAlertAction(title: title, actionStyle: CompatibleAlertActionStyle.Destructive, handler: handler)
+    class func destructiveActionWithTItle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)!) -> BPCompatibleAlertAction {
+        return BPCompatibleAlertAction(title: title, actionStyle: BPCompatibleAlertActionStyle.Destructive, handler: handler)
     }
 }
