@@ -19,7 +19,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     let title: String?
     let message: String?
     let alertStyle: BPCompatibleAlertControllerStyle
-    private var actions: [BPCompatibleAlertAction]
+    private var actions: [String : BPCompatibleAlertAction]
     private var alertControllerStyle: UIAlertControllerStyle {
         get {
             return alertStyle == BPCompatibleAlertControllerStyle.Actionsheet
@@ -35,26 +35,26 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     }
     
     /**
-        Creates an instance of BPCompatibleAlertController.
-        
-        :param: title The title of the alert shown.
-        :param: message The message shown for the alert below the title.
-        :param: alertStyle The style to be used when displaying the alert. Currently only supporting iOS 8.
+    Creates an instance of BPCompatibleAlertController.
     
-        :returns: The created alert controller.
+    :param: title The title of the alert shown.
+    :param: message The message shown for the alert below the title.
+    :param: alertStyle The style to be used when displaying the alert. Currently only supporting iOS 8.
+    
+    :returns: The created alert controller.
     */
     public init(title: String?, message: String?, alertStyle: BPCompatibleAlertControllerStyle) {
         self.title = title
         self.message = message
         self.alertStyle = alertStyle
-        self.actions = [BPCompatibleAlertAction]()
+        self.actions = [String : BPCompatibleAlertAction]()
     }
     
     /**
-        Creates a BPCompatibleAlertController with a type of Alert.
+    Creates a BPCompatibleAlertController with a type of Alert.
     
-        :param: title The title of the alert shown.
-        :param: message The message shown for the alert below the title.
+    :param: title The title of the alert shown.
+    :param: message The message shown for the alert below the title.
     
     :   returns: The created alert controller.
     */
@@ -63,38 +63,38 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     }
     
     /**
-        Creates a BPCompatibleAlertController with a type of ActionSheet.
-        
-        :param: title The title of the alert shown.
-        :param: message The message shown for the alert below the title.
+    Creates a BPCompatibleAlertController with a type of ActionSheet.
     
-        :returns: The created alert controller.
+    :param: title The title of the alert shown.
+    :param: message The message shown for the alert below the title.
+    
+    :returns: The created alert controller.
     */
     class func actionSheetControllerWithTitle(title: String?, message: String?) -> BPCompatibleAlertController {
         return BPCompatibleAlertController(title: title, message: message, alertStyle: BPCompatibleAlertControllerStyle.Actionsheet)
     }
     
     /**
-        Adds a button with a corresponding action to be executed upon pressing.
-        
-        :param: action The BPCompatibleAlertAction with set title and action block.
+    Adds a button with a corresponding action to be executed upon pressing.
+    
+    :param: action The BPCompatibleAlertAction with set title and action block.
     */
     public func addAction(action: BPCompatibleAlertAction) -> Void {
-        actions.append(action)
+        actions[action.title!] = action
     }
     
     /**
-        Presents the BPCompatibleAlertController to the user in the passed in UIViewController. If iOS 7, will
-        disregard the viewController and simply show the UIAlertView.
+    Presents the BPCompatibleAlertController to the user in the passed in UIViewController. If iOS 7, will
+    disregard the viewController and simply show the UIAlertView.
     
-        :param: viewController The UIViewController for the UIAlertController to be displayed to. Not used in iOS 7.
-        :param: animated Whether or not to animate the presentation.
-        :param: completion The completion block to be called when done presenting.
+    :param: viewController The UIViewController for the UIAlertController to be displayed to. Not used in iOS 7.
+    :param: animated Whether or not to animate the presentation.
+    :param: completion The completion block to be called when done presenting.
     */
     public func presentFrom(viewController: UIViewController!, animated: Bool, completion: (() -> Void)!) {
         if let checkCompatibility: AnyClass = NSClassFromString("UIAlertController") {
             let alertController = UIAlertController(title: title, message: message, preferredStyle: alertControllerStyle)
-            for action in actions {
+            for action in actions.values {
                 alertController.addAction(UIAlertAction(title: action.title!, style: action.alertActionStyle, handler: { (alertAction) -> Void in
                     action.handler(action)
                 }))
@@ -103,31 +103,31 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
                 completion()
             })
         } else {
-            var actionsCopy:[BPCompatibleAlertAction] = actions
+            var actionsCopy:[String : BPCompatibleAlertAction] = actions
             var cancelAction: BPCompatibleAlertAction?
             var index = 0
-            for action in actions {
+            for (title, action) in actions {
                 if action.actionStyle == BPCompatibleAlertActionStyle.Cancel {
                     cancelAction = action
-                    actionsCopy.removeAtIndex(index)
+                    actionsCopy.removeValueForKey(title)
                     break
                 }
                 index++
             }
             let alertView = UIAlertView(title: title, message: message, delegate: self, cancelButtonTitle: cancelAction?.title)
             alertView.alertViewStyle = alertViewStyle
-            for action in actionsCopy {
-                alertView.addButtonWithTitle(action.title!)
+            for (title, action) in actionsCopy {
+                alertView.addButtonWithTitle(title)
             }
             alertView.show()
         }
     }
     
     /**
-        Used to handle iOS 7 UIAlertView delegate calls. Do not use.
+    Used to handle iOS 7 UIAlertView delegate calls. Do not use.
     */
     public func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        let action = self.actions[buttonIndex] as BPCompatibleAlertAction
+        let action = actions[alertView.buttonTitleAtIndex(buttonIndex)] as BPCompatibleAlertAction!
         action.handler(action)
     }
 }
