@@ -33,6 +33,14 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
             return UIAlertViewStyle.Default
         }
     }
+    private var isiOS8: Bool {
+        get {
+            let versionString = UIDevice.currentDevice().systemVersion;
+            let numberFormatter = NSNumberFormatter()
+            numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+            return numberFormatter.numberFromString(versionString)?.integerValue >= 8
+        }
+    }
     
     /**
     Creates an instance of BPCompatibleAlertController.
@@ -92,7 +100,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     :param: completion The completion block to be called when done presenting.
     */
     public func presentFrom(viewController: UIViewController!, animated: Bool, completion: (() -> Void)!) {
-        if let checkCompatibility: AnyClass = NSClassFromString("UIAlertController") {
+        if isiOS8 {
             let alertController = UIAlertController(title: title, message: message, preferredStyle: alertControllerStyle)
             for action in actions.values {
                 alertController.addAction(UIAlertAction(title: action.title!, style: action.alertActionStyle, handler: { (alertAction) -> Void in
