@@ -35,10 +35,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     }
     private var isiOS8: Bool {
         get {
-            let versionString = UIDevice.currentDevice().systemVersion;
-            let numberFormatter = NSNumberFormatter()
-            numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
-            return numberFormatter.numberFromString(versionString)?.integerValue >= 8
+            return objc_getClass("UIAlertController") != nil
         }
     }
     
@@ -99,16 +96,21 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     :param: animated Whether or not to animate the presentation.
     :param: completion The completion block to be called when done presenting.
     */
-    public func presentFrom(viewController: UIViewController!, animated: Bool, completion: (() -> Void)!) {
+    public func presentFrom(viewController: UIViewController!, animated: Bool, completion: (() -> Void)?) {
         if isiOS8 {
+
             let alertController = UIAlertController(title: title, message: message, preferredStyle: alertControllerStyle)
             for action in actions.values {
                 alertController.addAction(UIAlertAction(title: action.title!, style: action.alertActionStyle, handler: { (alertAction) -> Void in
-                    action.handler(action)
+                    if let handler = action.handler {
+                        handler(action)
+                    }
                 }))
             }
             viewController.presentViewController(alertController, animated: animated, completion: { () -> Void in
-                completion()
+                if let completionHandler = completion {
+                    completionHandler()
+                }
             })
         } else {
             var actionsCopy:[String : BPCompatibleAlertAction] = actions
@@ -122,6 +124,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
                 }
                 index++
             }
+            
             let alertView = UIAlertView(title: title, message: message, delegate: self, cancelButtonTitle: cancelAction?.title)
             alertView.alertViewStyle = alertViewStyle
             for (title, action) in actionsCopy {
@@ -136,6 +139,8 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     */
     public func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
         let action = actions[alertView.buttonTitleAtIndex(buttonIndex)] as BPCompatibleAlertAction!
-        action.handler(action)
+        if let handler = action.handler {
+            handler(action)
+        }
     }
 }
