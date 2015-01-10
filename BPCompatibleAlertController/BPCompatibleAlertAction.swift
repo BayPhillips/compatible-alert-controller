@@ -30,7 +30,7 @@ public class BPCompatibleAlertAction {
     /**
         The handler to be called when the action/button is pressed.
     */
-    public let handler: ((BPCompatibleAlertAction!) -> Void)!
+    public let handler: ((BPCompatibleAlertAction!) -> Void)?
     
     /**
         Whether or not this action is actionable. Currently not supported.
@@ -61,7 +61,7 @@ public class BPCompatibleAlertAction {
     
         :returns: The created action.
     */
-    public init(title: String?, actionStyle: BPCompatibleAlertActionStyle, handler: ((BPCompatibleAlertAction!) -> Void)!) {
+    public init(title: String?, actionStyle: BPCompatibleAlertActionStyle, handler: ((BPCompatibleAlertAction!) -> Void)?) {
         self.title = title
         self.actionStyle = actionStyle
         self.handler = handler
@@ -76,7 +76,7 @@ public class BPCompatibleAlertAction {
     
         :returns: The created action.
     */
-    class func defaultActionWithTitle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)!) -> BPCompatibleAlertAction {
+    class func defaultActionWithTitle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)?) -> BPCompatibleAlertAction {
         return BPCompatibleAlertAction(title: title, actionStyle: BPCompatibleAlertActionStyle.Default, handler: handler)
     }
     
@@ -88,7 +88,7 @@ public class BPCompatibleAlertAction {
     
         :returns: The created action.
     */
-    class func cancelActionWithTitle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)!) -> BPCompatibleAlertAction {
+    class func cancelActionWithTitle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)?) -> BPCompatibleAlertAction {
         return BPCompatibleAlertAction(title: title, actionStyle: BPCompatibleAlertActionStyle.Cancel, handler: handler)
     }
     
@@ -100,7 +100,7 @@ public class BPCompatibleAlertAction {
     
         :returns: The created action.
     */
-    class func destructiveActionWithTItle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)!) -> BPCompatibleAlertAction {
+    class func destructiveActionWithTItle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)?) -> BPCompatibleAlertAction {
         return BPCompatibleAlertAction(title: title, actionStyle: BPCompatibleAlertActionStyle.Destructive, handler: handler)
     }
 }
