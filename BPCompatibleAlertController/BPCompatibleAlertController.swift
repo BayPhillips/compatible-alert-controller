@@ -21,8 +21,18 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     let title: String?
     let message: String?
     let alertStyle: BPCompatibleAlertControllerStyle
-    var alertController: UIAlertController!
-    var alertView: UIAlertView!
+    
+    /**
+    Allows for UITextFields in iOS7 UIAlertViews. Must have corresponding counts of
+    BPCompatibleTextFieldConfigurationHandlers for each style. 
+        Default = 0
+        PlainTextInput or SecureTextInput = 1
+        LoginAndPasswordInpnut = 2
+    */
+    public var alertViewStyle: UIAlertViewStyle
+    
+    private var alertController: UIAlertController!
+    private var alertView: UIAlertView!
     private var actions: [String : BPCompatibleAlertAction]
     private var textFieldConfigurations: [BPCompatibleTextFieldConfigruationHandler]
     private var alertControllerStyle: UIAlertControllerStyle {
@@ -30,13 +40,6 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
             return alertStyle == BPCompatibleAlertControllerStyle.Actionsheet
                 ? UIAlertControllerStyle.ActionSheet
                 : UIAlertControllerStyle.Alert
-        }
-    }
-    
-    private var alertViewStyle: UIAlertViewStyle {
-        get {
-            // TODO: Handle all styles
-            return UIAlertViewStyle.Default
         }
     }
     
@@ -59,6 +62,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
         self.title = title
         self.message = message
         self.alertStyle = alertStyle
+        self.alertViewStyle = UIAlertViewStyle.Default
         self.actions = [String : BPCompatibleAlertAction]()
         self.textFieldConfigurations = [BPCompatibleTextFieldConfigruationHandler]()
     }
@@ -110,9 +114,9 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     */
     public func presentFrom(viewController: UIViewController!, animated: Bool, completion: (() -> Void)?) {
         if isiOS8 {
-            self.alertController = UIAlertController(title: title, message: message, preferredStyle: alertControllerStyle)
+            alertController = UIAlertController(title: title, message: message, preferredStyle: alertControllerStyle)
             for action in actions.values {
-                alertController.addAction(UIAlertAction(title: action.title!, style: action.alertActionStyle, handler: { (alertAction) -> Void in
+                alertController.addAction(UIAlertAction(title: action.title!, style: action.alertActionStyle, handler: { (alertAction) in
                     if let handler = action.handler {
                         handler(action)
                     }
@@ -123,7 +127,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
                 alertController.addTextFieldWithConfigurationHandler(textFieldHandler)
             }
             
-            viewController.presentViewController(alertController, animated: animated, completion: { () -> Void in
+            viewController.presentViewController(alertController, animated: animated, completion: { () in
                 if let completionHandler = completion {
                     completionHandler()
                 }
@@ -132,6 +136,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
             var actionsCopy:[String : BPCompatibleAlertAction] = actions
             var cancelAction: BPCompatibleAlertAction?
             var index = 0
+            
             for (title, action) in actions {
                 if action.actionStyle == BPCompatibleAlertActionStyle.Cancel {
                     cancelAction = action
@@ -142,11 +147,31 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
             }
             
             alertView = UIAlertView(title: title, message: message, delegate: self, cancelButtonTitle: cancelAction?.title)
+            
+            sanityCheckTextFields()
+            
             alertView.alertViewStyle = alertViewStyle
+            
+            for (index, config) in enumerate(textFieldConfigurations) {
+                let textField = alertView.textFieldAtIndex(index) as UITextField!
+                config(textField)
+            }
+            
             for (title, action) in actionsCopy {
                 alertView.addButtonWithTitle(title)
             }
+            
             alertView.show()
+        }
+    }
+    
+    private func sanityCheckTextFields() {
+        if alertViewStyle == UIAlertViewStyle.Default {
+            assert(textFieldConfigurations.isEmpty, "You must set the alertViewStyle property to the corresponding style in order to use textFields in iOS7")
+        } else if alertViewStyle == UIAlertViewStyle.PlainTextInput || alertViewStyle == UIAlertViewStyle.SecureTextInput {
+            assert(textFieldConfigurations.count == 1, "You must specify only 1 textField when using either SecureTextInput or PlainTextInput")
+        } else if alertViewStyle == UIAlertViewStyle.LoginAndPasswordInput {
+            assert(textFieldConfigurations.count == 2, "You must specify 2 textFields when using the LoginAndPasswordInput alertViewStyle")
         }
     }
     

@@ -13,35 +13,45 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.view.backgroundColor = UIColor.whiteColor()
         self.title = "Demo"
         
-        // Initialize 
         alertController = BPCompatibleAlertController(title: "Alert Title", message: "Alert Message", alertStyle: BPCompatibleAlertControllerStyle.Alert)
+        alertController?.alertViewStyle = UIAlertViewStyle.LoginAndPasswordInput
         
-        alertController?.addAction(BPCompatibleAlertAction.defaultActionWithTitle("Default", handler: { (action) -> Void in
+        alertController?.addAction(BPCompatibleAlertAction.defaultActionWithTitle("Default", handler: { (action) in
+            if let textField = self.alertController?.textFieldAtIndex(0) {
+                NSLog("%@", textField.text!)
+            }
             if let textField = self.alertController?.textFieldAtIndex(1) {
                 NSLog("%@", textField.text!)
             }
         }))
-        alertController?.addAction(BPCompatibleAlertAction.cancelActionWithTitle("Cancel", handler: { (action) -> Void in
-            // Do something here
-        }))
-        alertController?.addAction(BPCompatibleAlertAction.destructiveActionWithTItle("Desctructive", handler: { (action) -> Void in
-            // Do something here
+        
+        alertController?.addAction(BPCompatibleAlertAction.cancelActionWithTitle("Cancel", handler: { (action) in
+            NSLog("Hit cancel")
         }))
         
-        alertController?.addTextFieldWithConfigurationHandler({ (textField) -> Void in
-            textField.placeholder = "Hello"
+        alertController?.addAction(BPCompatibleAlertAction.destructiveActionWithTItle("Desctructive", handler: { (action) in
+            NSLog("Hit destroy")
+        }))
+        
+        alertController?.addTextFieldWithConfigurationHandler({ (textField) in
+            textField.placeholder = "Username"
         })
         
-        alertController?.presentFrom(self, animated: true) { () -> Void in
+        alertController?.addTextFieldWithConfigurationHandler({ (textField) in
+            textField.placeholder = "Password"
+            textField.secureTextEntry = true
+        })
+        
+        alertController?.presentFrom(self.navigationController, animated: true) { () in
             // Completion handler
         }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        
     }
 }
