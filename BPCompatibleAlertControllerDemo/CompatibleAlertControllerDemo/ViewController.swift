@@ -20,7 +20,9 @@ class ViewController: UIViewController {
         alertController = BPCompatibleAlertController(title: "Alert Title", message: "Alert Message", alertStyle: BPCompatibleAlertControllerStyle.Alert)
         
         alertController?.addAction(BPCompatibleAlertAction.defaultActionWithTitle("Default", handler: { (action) -> Void in
-            // Do something here
+            if let textField = self.alertController?.textFieldAtIndex(1) {
+                NSLog("%@", textField.text!)
+            }
         }))
         alertController?.addAction(BPCompatibleAlertAction.cancelActionWithTitle("Cancel", handler: { (action) -> Void in
             // Do something here
@@ -28,6 +30,10 @@ class ViewController: UIViewController {
         alertController?.addAction(BPCompatibleAlertAction.destructiveActionWithTItle("Desctructive", handler: { (action) -> Void in
             // Do something here
         }))
+        
+        alertController?.addTextFieldWithConfigurationHandler({ (textField) -> Void in
+            textField.placeholder = "Hello"
+        })
         
         alertController?.presentFrom(self, animated: true) { () -> Void in
             // Completion handler

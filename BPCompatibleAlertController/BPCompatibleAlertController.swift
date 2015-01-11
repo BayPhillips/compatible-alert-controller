@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+public typealias BPCompatibleTextFieldConfigruationHandler = ((UITextField!) -> Void)!
+
 public enum BPCompatibleAlertControllerStyle {
     case Actionsheet
     case Alert
@@ -19,7 +21,10 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     let title: String?
     let message: String?
     let alertStyle: BPCompatibleAlertControllerStyle
+    var alertController: UIAlertController!
+    var alertView: UIAlertView!
     private var actions: [String : BPCompatibleAlertAction]
+    private var textFieldConfigurations: [BPCompatibleTextFieldConfigruationHandler]
     private var alertControllerStyle: UIAlertControllerStyle {
         get {
             return alertStyle == BPCompatibleAlertControllerStyle.Actionsheet
@@ -27,12 +32,14 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
                 : UIAlertControllerStyle.Alert
         }
     }
+    
     private var alertViewStyle: UIAlertViewStyle {
         get {
             // TODO: Handle all styles
             return UIAlertViewStyle.Default
         }
     }
+    
     private var isiOS8: Bool {
         get {
             return objc_getClass("UIAlertController") != nil
@@ -53,6 +60,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
         self.message = message
         self.alertStyle = alertStyle
         self.actions = [String : BPCompatibleAlertAction]()
+        self.textFieldConfigurations = [BPCompatibleTextFieldConfigruationHandler]()
     }
     
     /**
@@ -88,6 +96,10 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
         actions[action.title!] = action
     }
     
+    public func addTextFieldWithConfigurationHandler(configurationHandler : BPCompatibleTextFieldConfigruationHandler ) -> Void {
+        textFieldConfigurations.append(configurationHandler)
+    }
+    
     /**
     Presents the BPCompatibleAlertController to the user in the passed in UIViewController. If iOS 7, will
     disregard the viewController and simply show the UIAlertView.
@@ -98,8 +110,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     */
     public func presentFrom(viewController: UIViewController!, animated: Bool, completion: (() -> Void)?) {
         if isiOS8 {
-
-            let alertController = UIAlertController(title: title, message: message, preferredStyle: alertControllerStyle)
+            self.alertController = UIAlertController(title: title, message: message, preferredStyle: alertControllerStyle)
             for action in actions.values {
                 alertController.addAction(UIAlertAction(title: action.title!, style: action.alertActionStyle, handler: { (alertAction) -> Void in
                     if let handler = action.handler {
@@ -107,6 +118,11 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
                     }
                 }))
             }
+            
+            for textFieldHandler in textFieldConfigurations {
+                alertController.addTextFieldWithConfigurationHandler(textFieldHandler)
+            }
+            
             viewController.presentViewController(alertController, animated: animated, completion: { () -> Void in
                 if let completionHandler = completion {
                     completionHandler()
@@ -125,12 +141,25 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
                 index++
             }
             
-            let alertView = UIAlertView(title: title, message: message, delegate: self, cancelButtonTitle: cancelAction?.title)
+            alertView = UIAlertView(title: title, message: message, delegate: self, cancelButtonTitle: cancelAction?.title)
             alertView.alertViewStyle = alertViewStyle
             for (title, action) in actionsCopy {
                 alertView.addButtonWithTitle(title)
             }
             alertView.show()
+        }
+    }
+    
+    public func textFieldAtIndex(index: Int) -> UITextField? {
+        if isiOS8 {
+            if alertController.textFields?.count > index {
+                if let textField: UITextField = alertController.textFields![index] as? UITextField {
+                    return textField
+                }
+            }
+            return nil
+        } else {
+            return alertView.textFieldAtIndex(index)
         }
     }
     
