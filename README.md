@@ -1,4 +1,4 @@
-#BPCompatibleAlertController
+#BPCompatibleAlertController ![Travis CI Build](https://api.travis-ci.org/BayPhillips/compatible-alert-controller.svg)
 iOS 8 included the new UIAlertController which is a much needed upgrade upon the UIAlertView; however, if you're still supporting iOS 7, like most of us are, then you still need to use UIAlertViews.
 
 `BPCompatibleAlertController` does its best to emulate the UIAlertController implementation while supporting both iOS 7 and 8.
