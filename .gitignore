@@ -72,7 +72,6 @@ DerivedData
 *.pbxuser
 *.xcworkspace
 xcuserdata
-xcshareddata
 *~.nib
 build/
 
