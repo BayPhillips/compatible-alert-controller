@@ -100,7 +100,7 @@ public class BPCompatibleAlertAction {
     
         :returns: The created action.
     */
-    class func destructiveActionWithTItle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)?) -> BPCompatibleAlertAction {
+    class func destructiveActionWithTitle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)?) -> BPCompatibleAlertAction {
         return BPCompatibleAlertAction(title: title, actionStyle: BPCompatibleAlertActionStyle.Destructive, handler: handler)
     }
 }
