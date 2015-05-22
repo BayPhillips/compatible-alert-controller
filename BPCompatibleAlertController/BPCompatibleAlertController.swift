@@ -24,10 +24,10 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     
     /**
     Allows for UITextFields in iOS7 UIAlertViews. Must have corresponding counts of
-    BPCompatibleTextFieldConfigurationHandlers for each style. 
-        Default = 0
-        PlainTextInput or SecureTextInput = 1
-        LoginAndPasswordInpnut = 2
+    BPCompatibleTextFieldConfigurationHandlers for each style.
+    Default = 0
+    PlainTextInput or SecureTextInput = 1
+    LoginAndPasswordInpnut = 2
     */
     public var alertViewStyle: UIAlertViewStyle
     
@@ -98,6 +98,20 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     */
     public func addAction(action: BPCompatibleAlertAction) -> Void {
         actions[action.title!] = action
+        
+        // listen to changes on the BPCompatibleAlertAction enabled field to update the UIAlertAction in the alertController
+        NSNotificationCenter.defaultCenter().addObserverForName(BPCompatibleAlertActionEnabledDidChangeNotification, object: action, queue: NSOperationQueue.mainQueue()) { (notification) in
+            if self.isiOS8 {
+                for a in self.alertController.actions {
+                    if a.title == action.title {
+                        if let internalAction = a as? UIAlertAction {
+                            internalAction.enabled = action.enabled
+                        }
+                        break
+                    }
+                }
+            }
+        }
     }
     
     public func addTextFieldWithConfigurationHandler(configurationHandler : BPCompatibleTextFieldConfigruationHandler ) -> Void {
@@ -116,11 +130,14 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
         if isiOS8 {
             alertController = UIAlertController(title: title, message: message, preferredStyle: alertControllerStyle)
             for action in actions.values {
-                alertController.addAction(UIAlertAction(title: action.title!, style: action.alertActionStyle, handler: { (alertAction) in
+                
+                let uiAlertAction = UIAlertAction(title: action.title!, style: action.alertActionStyle, handler: { (alertAction) in
                     if let handler = action.handler {
                         handler(action)
                     }
-                }))
+                })
+                uiAlertAction.enabled = action.enabled
+                alertController.addAction(uiAlertAction)
             }
             
             for textFieldHandler in textFieldConfigurations {
