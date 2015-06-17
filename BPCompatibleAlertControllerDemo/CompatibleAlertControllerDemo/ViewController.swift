@@ -20,25 +20,33 @@ class ViewController: UIViewController {
         alertController = BPCompatibleAlertController(title: "Alert Title", message: "Alert Message", alertStyle: BPCompatibleAlertControllerStyle.Alert)
         alertController?.alertViewStyle = UIAlertViewStyle.LoginAndPasswordInput
         
-        alertController?.addAction(BPCompatibleAlertAction.defaultActionWithTitle("Default", handler: { (action) in
+        let defaultAction = BPCompatibleAlertAction.defaultActionWithTitle("Default", handler: { (action) in
             if let textField = self.alertController?.textFieldAtIndex(0) {
                 NSLog("%@", textField.text!)
             }
             if let textField = self.alertController?.textFieldAtIndex(1) {
                 NSLog("%@", textField.text!)
             }
-        }))
+        })
+        defaultAction.enabled = false
+        alertController?.addAction(defaultAction)
         
         alertController?.addAction(BPCompatibleAlertAction.cancelActionWithTitle("Cancel", handler: { (action) in
             NSLog("Hit cancel")
         }))
         
-        alertController?.addAction(BPCompatibleAlertAction.destructiveActionWithTItle("Desctructive", handler: { (action) in
+        alertController?.addAction(BPCompatibleAlertAction.destructiveActionWithTItle("Destructive", handler: { (action) in
             NSLog("Hit destroy")
         }))
         
         alertController?.addTextFieldWithConfigurationHandler({ (textField) in
             textField.placeholder = "Username"
+            
+            // when the user types in something enable the login
+            // when the user types something enable the login
+            NSNotificationCenter.defaultCenter().addObserverForName(UITextFieldTextDidChangeNotification, object: textField, queue: NSOperationQueue.mainQueue()) { (notification) in
+                defaultAction.enabled = textField.text != ""
+            }
         })
         
         alertController?.addTextFieldWithConfigurationHandler({ (textField) in
