@@ -33,7 +33,7 @@ class ViewController: UIViewController {
             NSLog("Hit cancel")
         }))
         
-        alertController?.addAction(BPCompatibleAlertAction.destructiveActionWithTItle("Desctructive", handler: { (action) in
+        alertController?.addAction(BPCompatibleAlertAction.destructiveActionWithTitle("Desctructive", handler: { (action) in
             NSLog("Hit destroy")
         }))
         
