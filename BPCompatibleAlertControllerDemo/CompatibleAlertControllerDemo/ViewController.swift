@@ -9,52 +9,69 @@
 import UIKit
 
 class ViewController: UIViewController {
-    var alertController: BPCompatibleAlertController?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+		
+		var observerObject: NSObjectProtocol?
+		
+		let cleanupAfterAlertDismissed: (Void) -> Void =
+			{
+				if (observerObject != nil)
+				{
+					NSNotificationCenter.defaultCenter().removeObserver(observerObject!)
+					observerObject = nil
+				}
+			}
+		
         self.view.backgroundColor = UIColor.whiteColor()
         self.title = "Demo"
         
-        alertController = BPCompatibleAlertController(title: "Alert Title", message: "Alert Message", alertStyle: BPCompatibleAlertControllerStyle.Alert)
-        alertController?.alertViewStyle = UIAlertViewStyle.LoginAndPasswordInput
+        let alertController = BPCompatibleAlertController(title: "Alert Title", message: "Alert Message", alertStyle: BPCompatibleAlertControllerStyle.Alert)
+        alertController.alertViewStyle = UIAlertViewStyle.LoginAndPasswordInput
+		
+		// Set releaseResourcesWhenAlertDismissed to false if you intend to re-use alertController to present the alert multiple times.
+		// If you do so, you must remember to call alertController.releaseResources() when you are finished with the alertController.
+		//alertController.releaseResourcesWhenAlertDismissed = false
         
         let defaultAction = BPCompatibleAlertAction.defaultActionWithTitle("Default", handler: { (action) in
-            if let textField = self.alertController?.textFieldAtIndex(0) {
+            if let textField = alertController.textFieldAtIndex(0) {
                 NSLog("%@", textField.text!)
             }
-            if let textField = self.alertController?.textFieldAtIndex(1) {
+            if let textField = alertController.textFieldAtIndex(1) {
                 NSLog("%@", textField.text!)
             }
+			cleanupAfterAlertDismissed()
         })
         defaultAction.enabled = false
-        alertController?.addAction(defaultAction)
+        alertController.addAction(defaultAction)
         
-        alertController?.addAction(BPCompatibleAlertAction.cancelActionWithTitle("Cancel", handler: { (action) in
+        alertController.addAction(BPCompatibleAlertAction.cancelActionWithTitle("Cancel", handler: { (action) in
             NSLog("Hit cancel")
+			cleanupAfterAlertDismissed()
         }))
         
-        alertController?.addAction(BPCompatibleAlertAction.destructiveActionWithTItle("Destructive", handler: { (action) in
+        alertController.addAction(BPCompatibleAlertAction.destructiveActionWithTItle("Destructive", handler: { (action) in
             NSLog("Hit destroy")
+			cleanupAfterAlertDismissed()
         }))
         
-        alertController?.addTextFieldWithConfigurationHandler({ (textField) in
+        alertController.addTextFieldWithConfigurationHandler({ (textField) in
             textField.placeholder = "Username"
             
             // when the user types in something enable the login
             // when the user types something enable the login
-            NSNotificationCenter.defaultCenter().addObserverForName(UITextFieldTextDidChangeNotification, object: textField, queue: NSOperationQueue.mainQueue()) { (notification) in
+			observerObject = NSNotificationCenter.defaultCenter().addObserverForName(UITextFieldTextDidChangeNotification, object: textField, queue: NSOperationQueue.mainQueue()) { (notification) in
                 defaultAction.enabled = textField.text != ""
             }
         })
         
-        alertController?.addTextFieldWithConfigurationHandler({ (textField) in
+        alertController.addTextFieldWithConfigurationHandler({ (textField) in
             textField.placeholder = "Password"
             textField.secureTextEntry = true
         })
         
-        alertController?.presentFrom(self.navigationController, animated: true) { () in
+        alertController.presentFrom(self.navigationController, animated: true) { () in
             // Completion handler
         }
     }
