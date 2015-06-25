@@ -60,13 +60,3 @@ alertController = nil
 
 ##License##
 `BPCompatibleAlertController` is licensed under the MIT License. See LICENSE for details.
-
-
-```
-
-##To Do##
-1. Tests!
-2. Probably a lot more! PR's are welcome.
-
-##License##
-`BPCompatibleAlertController` is licensed under the MIT License. See LICENSE for details.
