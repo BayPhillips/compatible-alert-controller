@@ -231,11 +231,16 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     Used to handle iOS 7 UIAlertView delegate calls. Do not use.
     */
     public func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        let action = actions[alertView.buttonTitleAtIndex(buttonIndex)] as BPCompatibleAlertAction!
-        if let handler = action.handler {
+        
+        // Use optional action, as this delegate function can be called multiple times if user repeatedly taps
+        //  button quickly. (Hard to do, but possible during view controller transitions...)
+        // After the first invocation postAlertDismissalActions() will have already removed
+        //  all the actions, resulting in a nil action.
+        let action = actions[alertView.buttonTitleAtIndex(buttonIndex)] as BPCompatibleAlertAction?
+        if let handler = action?.handler {
             handler(action)
         }
-    
+        
         postAlertDismissalActions()
     }
     
@@ -244,29 +249,27 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     this function should be called manually at an appropriate time to free up internal resources
     and allow this object to be deallocated.
     */
-    public func releaseResources()
-    {
+    public func releaseResources() {
         // Removing observers releases any references to self held by the notification handler block, allowing self to be deallocated
         stopObservingAlertActionEnabledDidChangeNotification()
         
         // Clean up any other objects that may be containining references to self and prevent self from being deallocated
         actions.removeAll(keepCapacity: false)
         textFieldConfigurations.removeAll(keepCapacity: false)
+        //alertView.delegate = nil
         alertController = nil
         
         resourcesHaveBeenReleased = true
     }
     
-    private func postAlertDismissalActions()
-    {
+    private func postAlertDismissalActions() {
         if (releaseResourcesWhenAlertDismissed)
         {
             releaseResources()
         }
     }
     
-    private func stopObservingAlertActionEnabledDidChangeNotification()
-    {
+    private func stopObservingAlertActionEnabledDidChangeNotification() {
         for actionObserver in actionObservers
         {
             NSNotificationCenter.defaultCenter().removeObserver(actionObserver)
