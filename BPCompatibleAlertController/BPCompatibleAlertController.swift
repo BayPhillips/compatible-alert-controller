@@ -16,6 +16,26 @@ public enum BPCompatibleAlertControllerStyle {
     case Alert
 }
 
+private class BPAlertView : UIAlertView {
+    // Keep a strong reference to the delegate to ensure the BPCompatibleAlertController doesn't get destroyed by ARC on iOS 7
+    // Once the alert button has been clicked and BPCompatibleAlertController is finished with this alert view, BPCompatibleAlertController
+    //  can clear the delegateReference and ARC can clean up
+    var delegateReference: BPCompatibleAlertController?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    init(title: String?, message: String?, delegate: BPCompatibleAlertController, cancelButtonTitle: String?) {
+        delegateReference = delegate
+        super.init(title: title, message: message, delegate: delegate, cancelButtonTitle: cancelButtonTitle)
+    }
+}
+
 @objc(BPCompatibleAlertController)
 public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     let title: String?
@@ -45,7 +65,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     public var releaseResourcesWhenAlertDismissed: Bool = true
     
     private var alertController: UIAlertController!
-    private var alertView: UIAlertView!
+    private var alertView: BPAlertView!
     private var actions: [String : BPCompatibleAlertAction]
     private var actionObservers: Array<NSObjectProtocol> = []
     public var resourcesHaveBeenReleased: Bool = false
@@ -118,7 +138,6 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
         let observerObject = NSNotificationCenter.defaultCenter().addObserverForName(BPCompatibleAlertActionEnabledDidChangeNotification, object: action, queue: NSOperationQueue.mainQueue()) { (notification) in
             if self.uiAlertControllerAvailable {
             
-                // This reference to self.alertController has the side effect of preventing ARC from releasing self, which on iOS 7 avoids a crash if the external client code hasn't explicitly retained this alertController.
                 for a in self.alertController.actions {
                     if a.title == action.title {
                         if let internalAction = a as? UIAlertAction {
@@ -185,7 +204,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
                 index++
             }
             
-            alertView = UIAlertView(title: title, message: message, delegate: self, cancelButtonTitle: cancelAction?.title)
+            alertView = BPAlertView(title: title, message: message, delegate: self, cancelButtonTitle: cancelAction?.title)
             
             sanityCheckTextFields()
             
@@ -256,9 +275,12 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
         // Clean up any other objects that may be containining references to self and prevent self from being deallocated
         actions.removeAll(keepCapacity: false)
         textFieldConfigurations.removeAll(keepCapacity: false)
-        //alertView.delegate = nil
         alertController = nil
         
+        alertView?.delegate = nil
+        alertView?.delegateReference = nil
+        alertView = nil
+
         resourcesHaveBeenReleased = true
     }
     
