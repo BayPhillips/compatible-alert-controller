@@ -16,6 +16,26 @@ public enum BPCompatibleAlertControllerStyle {
     case Alert
 }
 
+private class BPAlertView : UIAlertView {
+    // Keep a strong reference to the delegate to ensure the BPCompatibleAlertController doesn't get destroyed by ARC on iOS 7
+    // Once the alert button has been clicked and BPCompatibleAlertController is finished with this alert view, BPCompatibleAlertController
+    //  can clear the delegateReference and ARC can clean up
+    var delegateReference: BPCompatibleAlertController?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    init(title: String?, message: String?, delegate: BPCompatibleAlertController, cancelButtonTitle: String?) {
+        delegateReference = delegate
+        super.init(title: title, message: message, delegate: delegate, cancelButtonTitle: cancelButtonTitle)
+    }
+}
+
 @objc(BPCompatibleAlertController)
 public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     let title: String?
@@ -31,9 +51,32 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     */
     public var alertViewStyle: UIAlertViewStyle
     
+    /** 
+    Client code can optionally set this if they have custom clean up code they want run after an alert action has been triggered.
+    
+    This cleanup function will be run regardless of whether or not the user provided an action handler block with an action.
+    If the user did provide an action handler block, this cleanup function will be invoked after the user supplied handler.
+    */
+    public var postActionHandlerCleanupFunction: ((Void) -> Void)?
+    
+    /**
+    If this set, when the user dismisses the alert all the resources used
+    by this alert controller will be automatically released allowing this object to be deallocated.
+    
+    After the user has dismissed the alert, presentFrom: cannot be called again on this object.
+    
+    Should client code set this to false (because they intend to re-user the alert), it must at some stage call releaseResources() to
+    ensure internal resources are freed up.
+    
+    releaseResourcesWhenAlertDismissed defaults to true.
+    */
+    public var releaseResourcesWhenAlertDismissed: Bool = true
+    
     private var alertController: UIAlertController!
-    private var alertView: UIAlertView!
+    private var alertView: BPAlertView!
     private var actions: [String : BPCompatibleAlertAction]
+    private var actionObservers: [NSObjectProtocol] = []
+    public var resourcesHaveBeenReleased: Bool = false
     private var textFieldConfigurations: [BPCompatibleTextFieldConfigruationHandler]
     private var alertControllerStyle: UIAlertControllerStyle {
         get {
@@ -43,7 +86,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
         }
     }
     
-    private var isiOS8: Bool {
+    private var uiAlertControllerAvailable: Bool {
         get {
             return objc_getClass("UIAlertController") != nil
         }
@@ -100,8 +143,9 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
         actions[action.title!] = action
         
         // listen to changes on the BPCompatibleAlertAction enabled field to update the UIAlertAction in the alertController
-        NSNotificationCenter.defaultCenter().addObserverForName(BPCompatibleAlertActionEnabledDidChangeNotification, object: action, queue: NSOperationQueue.mainQueue()) { (notification) in
-            if self.isiOS8 {
+        let observerObject = NSNotificationCenter.defaultCenter().addObserverForName(BPCompatibleAlertActionEnabledDidChangeNotification, object: action, queue: NSOperationQueue.mainQueue()) { (notification) in
+            if self.uiAlertControllerAvailable {
+            
                 for a in self.alertController.actions {
                     if a.title == action.title {
                         if let internalAction = a as? UIAlertAction {
@@ -112,6 +156,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
                 }
             }
         }
+        self.actionObservers.append(observerObject)
     }
     
     public func addTextFieldWithConfigurationHandler(configurationHandler : BPCompatibleTextFieldConfigruationHandler ) -> Void {
@@ -127,7 +172,9 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     :param: completion The completion block to be called when done presenting.
     */
     public func presentFrom(viewController: UIViewController!, animated: Bool, completion: (() -> Void)?) {
-        if isiOS8 {
+        assert(resourcesHaveBeenReleased == false, "You cannot present an alert controller again after its resources have been released!")
+        
+        if uiAlertControllerAvailable {
             alertController = UIAlertController(title: title, message: message, preferredStyle: alertControllerStyle)
             for action in actions.values {
                 
@@ -135,6 +182,8 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
                     if let handler = action.handler {
                         handler(action)
                     }
+                    
+                    self.postAlertDismissalActions()
                 })
                 uiAlertAction.enabled = action.enabled
                 alertController.addAction(uiAlertAction)
@@ -163,7 +212,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
                 index++
             }
             
-            alertView = UIAlertView(title: title, message: message, delegate: self, cancelButtonTitle: cancelAction?.title)
+            alertView = BPAlertView(title: title, message: message, delegate: self, cancelButtonTitle: cancelAction?.title)
             
             sanityCheckTextFields()
             
@@ -193,7 +242,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     }
     
     public func textFieldAtIndex(index: Int) -> UITextField? {
-        if isiOS8 {
+        if uiAlertControllerAvailable {
             if alertController.textFields?.count > index {
                 if let textField: UITextField = alertController.textFields![index] as? UITextField {
                     return textField
@@ -209,9 +258,54 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     Used to handle iOS 7 UIAlertView delegate calls. Do not use.
     */
     public func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        let action = actions[alertView.buttonTitleAtIndex(buttonIndex)] as BPCompatibleAlertAction!
-        if let handler = action.handler {
+        
+        // Use optional action, as this delegate function can be called multiple times if user repeatedly taps
+        //  button quickly. (Hard to do, but possible during view controller transitions...)
+        // After the first invocation postAlertDismissalActions() will have already removed
+        //  all the actions, resulting in a nil action.
+        let action = actions[alertView.buttonTitleAtIndex(buttonIndex)] as BPCompatibleAlertAction?
+        if let handler = action?.handler {
             handler(action)
         }
+        
+        postAlertDismissalActions()
+    }
+    
+    /**
+    If the client code has opted to set releaseResourcesWhenAlertDismissed to false, then 
+    this function should be called manually at an appropriate time to free up internal resources
+    and allow this object to be deallocated.
+    */
+    public func releaseResources() {
+        // Removing observers releases any references to self held by the notification handler block, allowing self to be deallocated
+        stopObservingAlertActionEnabledDidChangeNotification()
+        
+        // Clean up any other objects that may be containining references to self and prevent self from being deallocated
+        actions.removeAll(keepCapacity: false)
+        textFieldConfigurations.removeAll(keepCapacity: false)
+        alertController = nil
+        
+        alertView?.delegate = nil
+        alertView?.delegateReference = nil
+        alertView = nil
+
+        resourcesHaveBeenReleased = true
+    }
+    
+    private func postAlertDismissalActions() {
+        if (releaseResourcesWhenAlertDismissed) {
+            releaseResources()
+        }
+        
+        if (postActionHandlerCleanupFunction != nil) {
+            postActionHandlerCleanupFunction?()
+        }
+    }
+    
+    private func stopObservingAlertActionEnabledDidChangeNotification() {
+        for actionObserver in actionObservers {
+            NSNotificationCenter.defaultCenter().removeObserver(actionObserver)
+        }
+        self.actionObservers.removeAll(keepCapacity: false)
     }
 }

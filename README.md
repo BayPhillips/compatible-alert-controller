@@ -35,14 +35,28 @@ UIAlertViewStyle.LoginAndPasswordInpnut = 2 textFields
 ###Present the alert controller:###
 ```
 alertController.presentFrom(viewController, animated: true) { () in
-  // Completion handler once everything is dismissed
+  // Completion handler once alertController has been displayed
 }
 ```
 
+###Re-presenting the alert controller:###
+By default, each instance of the alertController cleans up its internal resources automatically after the presented alert has been dismissed by the user and cannot be re-presented.
+
+If you do wish to re-use an instance, tell it to not to release its resources before presenting it, then manually `releaseResources()` when you are done.
+
+```
+alertController.releaseResourcesWhenAlertDismissed = false
+...
+alertController.presentFrom(viewController, animated: true, completion:nil)
+alertController.presentFrom(viewController, animated: true, completion:nil)
+...
+alertController.releaseResources()
+alertController = nil
+```
+
 ##To Do##
-1. You need to retain the `BPCompatibleAlertController` in iOS 7 otherwise when selecting a button from the `UIAlertView` you'll get an exception.
-2. Tests!
-3. Probably a lot more! PR's are welcome.
+1. Tests!
+2. Probably a lot more! PR's are welcome.
 
 ##License##
 `BPCompatibleAlertController` is licensed under the MIT License. See LICENSE for details.
