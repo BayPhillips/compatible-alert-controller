@@ -67,7 +67,7 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     private var alertController: UIAlertController!
     private var alertView: BPAlertView!
     private var actions: [String : BPCompatibleAlertAction]
-    private var actionObservers: Array<NSObjectProtocol> = []
+    private var actionObservers: [NSObjectProtocol] = []
     public var resourcesHaveBeenReleased: Bool = false
     private var textFieldConfigurations: [BPCompatibleTextFieldConfigruationHandler]
     private var alertControllerStyle: UIAlertControllerStyle {
