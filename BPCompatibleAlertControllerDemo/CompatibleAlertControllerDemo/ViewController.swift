@@ -15,20 +15,19 @@ class ViewController: UIViewController {
         
         var observerObject: NSObjectProtocol?
         
-        let cleanupAfterAlertDismissed: (Void) -> Void =
-            {
-                if (observerObject != nil)
-                {
-                    NSNotificationCenter.defaultCenter().removeObserver(observerObject!)
-                    observerObject = nil
-                }
-            }
-        
         self.view.backgroundColor = UIColor.whiteColor()
         self.title = "Demo"
         
         let alertController = BPCompatibleAlertController(title: "Alert Title", message: "Alert Message", alertStyle: BPCompatibleAlertControllerStyle.Alert)
         alertController.alertViewStyle = UIAlertViewStyle.LoginAndPasswordInput
+        
+        alertController.postActionHandlerCleanupFunction =  {
+            if (observerObject != nil)
+            {
+                NSNotificationCenter.defaultCenter().removeObserver(observerObject!)
+                observerObject = nil
+            }
+        }
         
         // Set releaseResourcesWhenAlertDismissed to false if you intend to re-use alertController to present the alert multiple times.
         // If you do so, you must remember to call alertController.releaseResources() when you are finished with the alertController.
@@ -41,19 +40,16 @@ class ViewController: UIViewController {
             if let textField = alertController.textFieldAtIndex(1) {
                 NSLog("%@", textField.text!)
             }
-            cleanupAfterAlertDismissed()
         })
         defaultAction.enabled = false
         alertController.addAction(defaultAction)
         
         alertController.addAction(BPCompatibleAlertAction.cancelActionWithTitle("Cancel", handler: { (action) in
             NSLog("Hit cancel")
-            cleanupAfterAlertDismissed()
         }))
         
         alertController.addAction(BPCompatibleAlertAction.destructiveActionWithTItle("Destructive", handler: { (action) in
             NSLog("Hit destroy")
-            cleanupAfterAlertDismissed()
         }))
         
         alertController.addTextFieldWithConfigurationHandler({ (textField) in

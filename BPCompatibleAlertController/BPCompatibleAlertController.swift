@@ -51,6 +51,14 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     */
     public var alertViewStyle: UIAlertViewStyle
     
+    /** 
+    Client code can optionally set this if they have custom clean up code they want run after an alert action has been triggered.
+    
+    This cleanup function will be run regardless of whether or not the user provided an action handler block with an action.
+    If the user did provide an action handler block, this cleanup function will be invoked after the user supplied handler.
+    */
+    public var postActionHandlerCleanupFunction: ((Void) -> Void)?
+    
     /**
     If this set, when the user dismisses the alert all the resources used
     by this alert controller will be automatically released allowing this object to be deallocated.
@@ -285,15 +293,17 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     }
     
     private func postAlertDismissalActions() {
-        if (releaseResourcesWhenAlertDismissed)
-        {
+        if (releaseResourcesWhenAlertDismissed) {
             releaseResources()
+        }
+        
+        if (postActionHandlerCleanupFunction != nil) {
+            postActionHandlerCleanupFunction?()
         }
     }
     
     private func stopObservingAlertActionEnabledDidChangeNotification() {
-        for actionObserver in actionObservers
-        {
+        for actionObserver in actionObservers {
             NSNotificationCenter.defaultCenter().removeObserver(actionObserver)
         }
         self.actionObservers.removeAll(keepCapacity: false)
