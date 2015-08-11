@@ -167,6 +167,8 @@
 		61F82CDD1A2D30090015066C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = "Bay Phillips";
 				TargetAttributes = {
