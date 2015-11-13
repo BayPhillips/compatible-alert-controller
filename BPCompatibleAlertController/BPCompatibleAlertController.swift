@@ -16,7 +16,28 @@ public enum BPCompatibleAlertControllerStyle {
     case Alert
 }
 
-private class BPAlertView : UIAlertView {
+
+protocol AlertProtocol {
+    
+}
+
+@available(iOS 8.0, *)
+extension BPCompatibleAlertController {
+    var alertControllerStyle: UIAlertControllerStyle {
+        get {
+            return alertStyle == BPCompatibleAlertControllerStyle.Actionsheet
+                ? UIAlertControllerStyle.ActionSheet
+                : UIAlertControllerStyle.Alert
+        }
+    }
+}
+
+@available(iOS 8.0, *)
+private class BPAlertController: UIAlertController, AlertProtocol {
+
+}
+
+private class BPAlertView : UIAlertView, AlertProtocol {
     // Keep a strong reference to the delegate to ensure the BPCompatibleAlertController doesn't get destroyed by ARC on iOS 7
     // Once the alert button has been clicked and BPCompatibleAlertController is finished with this alert view, BPCompatibleAlertController
     //  can clear the delegateReference and ARC can clean up
@@ -26,17 +47,20 @@ private class BPAlertView : UIAlertView {
         super.init(frame: frame)
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
     init(title: String?, message: String?, delegate: BPCompatibleAlertController, cancelButtonTitle: String?) {
         delegateReference = delegate
-        super.init(title: title, message: message, delegate: delegate, cancelButtonTitle: cancelButtonTitle)
+        super.init(frame: CGRectZero)
+        self.title = title ?? ""
+        self.message = message
+        self.delegate = delegate
+        //super.init(title: title, message: message, delegate: delegate, cancelButtonTitle: cancelButtonTitle)
     }
 }
 
-@objc(BPCompatibleAlertController)
 public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     let title: String?
     let message: String?
@@ -72,19 +96,11 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     */
     public var releaseResourcesWhenAlertDismissed: Bool = true
     
-    private var alertController: UIAlertController!
-    private var alertView: BPAlertView!
+    private var alerter: AlertProtocol!
     private var actions: [String : BPCompatibleAlertAction]
     private var actionObservers: [NSObjectProtocol] = []
     public var resourcesHaveBeenReleased: Bool = false
     private var textFieldConfigurations: [BPCompatibleTextFieldConfigruationHandler]
-    private var alertControllerStyle: UIAlertControllerStyle {
-        get {
-            return alertStyle == BPCompatibleAlertControllerStyle.Actionsheet
-                ? UIAlertControllerStyle.ActionSheet
-                : UIAlertControllerStyle.Alert
-        }
-    }
     
     private var uiAlertControllerAvailable: Bool {
         get {
@@ -95,11 +111,11 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     /**
     Creates an instance of BPCompatibleAlertController.
     
-    :param: title The title of the alert shown.
-    :param: message The message shown for the alert below the title.
-    :param: alertStyle The style to be used when displaying the alert. Currently only supporting iOS 8.
+    - parameter title: The title of the alert shown.
+    - parameter message: The message shown for the alert below the title.
+    - parameter alertStyle: The style to be used when displaying the alert. Currently only supporting iOS 8.
     
-    :returns: The created alert controller.
+    - returns: The created alert controller.
     */
     public init(title: String?, message: String?, alertStyle: BPCompatibleAlertControllerStyle) {
         self.title = title
@@ -113,8 +129,8 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     /**
     Creates a BPCompatibleAlertController with a type of Alert.
     
-    :param: title The title of the alert shown.
-    :param: message The message shown for the alert below the title.
+    - parameter title: The title of the alert shown.
+    - parameter message: The message shown for the alert below the title.
     
     :   returns: The created alert controller.
     */
@@ -125,10 +141,10 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     /**
     Creates a BPCompatibleAlertController with a type of ActionSheet.
     
-    :param: title The title of the alert shown.
-    :param: message The message shown for the alert below the title.
+    - parameter title: The title of the alert shown.
+    - parameter message: The message shown for the alert below the title.
     
-    :returns: The created alert controller.
+    - returns: The created alert controller.
     */
     class func actionSheetControllerWithTitle(title: String?, message: String?) -> BPCompatibleAlertController {
         return BPCompatibleAlertController(title: title, message: message, alertStyle: BPCompatibleAlertControllerStyle.Actionsheet)
@@ -137,21 +153,20 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     /**
     Adds a button with a corresponding action to be executed upon pressing.
     
-    :param: action The BPCompatibleAlertAction with set title and action block.
+    - parameter action: The BPCompatibleAlertAction with set title and action block.
     */
     public func addAction(action: BPCompatibleAlertAction) -> Void {
         actions[action.title!] = action
         
         // listen to changes on the BPCompatibleAlertAction enabled field to update the UIAlertAction in the alertController
         let observerObject = NSNotificationCenter.defaultCenter().addObserverForName(BPCompatibleAlertActionEnabledDidChangeNotification, object: action, queue: NSOperationQueue.mainQueue()) { (notification) in
-            if self.uiAlertControllerAvailable {
-            
-                for a in self.alertController.actions {
-                    if a.title == action.title {
-                        if let internalAction = a as? UIAlertAction {
-                            internalAction.enabled = action.enabled
+            if #available(iOS 8.0, *) {
+                if let alertController = self.alerter as? BPAlertController {
+                    for alertAction in alertController.actions {
+                        if alertAction.title == action.title {
+                            alertAction.enabled = action.enabled
+                            break
                         }
-                        break
                     }
                 }
             }
@@ -167,15 +182,16 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     Presents the BPCompatibleAlertController to the user in the passed in UIViewController. If iOS 7, will
     disregard the viewController and simply show the UIAlertView.
     
-    :param: viewController The UIViewController for the UIAlertController to be displayed to. Not used in iOS 7.
-    :param: animated Whether or not to animate the presentation.
-    :param: completion The completion block to be called when done presenting.
+    - parameter viewController: The UIViewController for the UIAlertController to be displayed to. Not used in iOS 7.
+    - parameter animated: Whether or not to animate the presentation.
+    - parameter completion: The completion block to be called when done presenting.
     */
     public func presentFrom(viewController: UIViewController!, animated: Bool, completion: (() -> Void)?) {
         assert(resourcesHaveBeenReleased == false, "You cannot present an alert controller again after its resources have been released!")
         
-        if uiAlertControllerAvailable {
-            alertController = UIAlertController(title: title, message: message, preferredStyle: alertControllerStyle)
+        if #available(iOS 8.0, *) {
+            self.alerter = BPAlertController(title: title, message: message, preferredStyle: alertControllerStyle)
+            let alertController = self.alerter as! BPAlertController
             for action in actions.values {
                 
                 let uiAlertAction = UIAlertAction(title: action.title!, style: action.alertActionStyle, handler: { (alertAction) in
@@ -212,18 +228,18 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
                 index++
             }
             
-            alertView = BPAlertView(title: title, message: message, delegate: self, cancelButtonTitle: cancelAction?.title)
-            
+            self.alerter = BPAlertView(title: title, message: message, delegate: self, cancelButtonTitle: cancelAction?.title)
+            let alertView = self.alerter as! BPAlertView
             sanityCheckTextFields()
             
             alertView.alertViewStyle = alertViewStyle
             
-            for (index, config) in enumerate(textFieldConfigurations) {
+            for (index, config) in textFieldConfigurations.enumerate() {
                 let textField = alertView.textFieldAtIndex(index) as UITextField!
                 config(textField)
             }
             
-            for (title, action) in actionsCopy {
+            for (title, _) in actionsCopy {
                 alertView.addButtonWithTitle(title)
             }
             
@@ -242,14 +258,16 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
     }
     
     public func textFieldAtIndex(index: Int) -> UITextField? {
-        if uiAlertControllerAvailable {
+        if #available(iOS 8.0, *) {
+            let alertController = self.alerter as! BPAlertController
             if alertController.textFields?.count > index {
-                if let textField: UITextField = alertController.textFields![index] as? UITextField {
+                if let textField: UITextField = alertController.textFields![index] as UITextField {
                     return textField
                 }
             }
             return nil
         } else {
+            let alertView = self.alerter as! BPAlertView
             return alertView.textFieldAtIndex(index)
         }
     }
@@ -263,7 +281,8 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
         //  button quickly. (Hard to do, but possible during view controller transitions...)
         // After the first invocation postAlertDismissalActions() will have already removed
         //  all the actions, resulting in a nil action.
-        let action = actions[alertView.buttonTitleAtIndex(buttonIndex)] as BPCompatibleAlertAction?
+        let alertView = self.alerter as! BPAlertView
+        let action = actions[alertView.buttonTitleAtIndex(buttonIndex)!] as BPCompatibleAlertAction?
         if let handler = action?.handler {
             handler(action)
         }
@@ -283,11 +302,12 @@ public class BPCompatibleAlertController : NSObject, UIAlertViewDelegate {
         // Clean up any other objects that may be containining references to self and prevent self from being deallocated
         actions.removeAll(keepCapacity: false)
         textFieldConfigurations.removeAll(keepCapacity: false)
-        alertController = nil
         
-        alertView?.delegate = nil
-        alertView?.delegateReference = nil
-        alertView = nil
+        if let alertView = self.alerter as? BPAlertView {
+            alertView.delegate = nil
+            alertView.delegateReference = nil
+        }
+        self.alerter = nil
 
         resourcesHaveBeenReleased = true
     }

@@ -17,7 +17,25 @@ public enum BPCompatibleAlertActionStyle {
 
 let BPCompatibleAlertActionEnabledDidChangeNotification: String = "BPCompatibleAlertActionEnabledDidChangeNotification"
 
-@objc(BPCompatibleAlertAction)
+@available(iOS 8.0, *)
+public extension BPCompatibleAlertAction
+{
+    /**
+    The UIAlertActionStyle to be used for the UIAlertController in iOS 8.
+    */
+    public var alertActionStyle: UIAlertActionStyle {
+        get {
+            if self.actionStyle == BPCompatibleAlertActionStyle.Cancel {
+                return UIAlertActionStyle.Cancel
+            } else if self.actionStyle == BPCompatibleAlertActionStyle.Destructive {
+                return UIAlertActionStyle.Destructive
+            } else {
+                return UIAlertActionStyle.Default
+            }
+        }
+    }
+}
+
 public class BPCompatibleAlertAction {
     /**
     The title of the Action to be shown in the button.
@@ -45,30 +63,16 @@ public class BPCompatibleAlertAction {
             }
         }
     }
-    
-    /**
-    The UIAlertActionStyle to be used for the UIAlertController in iOS 8.
-    */
-    public var alertActionStyle: UIAlertActionStyle {
-        get {
-            if self.actionStyle == BPCompatibleAlertActionStyle.Cancel {
-                return UIAlertActionStyle.Cancel
-            } else if self.actionStyle == BPCompatibleAlertActionStyle.Destructive {
-                return UIAlertActionStyle.Destructive
-            } else {
-                return UIAlertActionStyle.Default
-            }
-        }
-    }
+
     
     /**
     Creates an instance of BPCompatibleAlertAction.
     
-    :param: title The title of the button.
-    :param: actionStyle The style of the button.
-    :param: handler The block to be called when the button is pressed.
+    - parameter title: The title of the button.
+    - parameter actionStyle: The style of the button.
+    - parameter handler: The block to be called when the button is pressed.
     
-    :returns: The created action.
+    - returns: The created action.
     */
     public init(title: String?, actionStyle: BPCompatibleAlertActionStyle, handler: ((BPCompatibleAlertAction!) -> Void)?) {
         self.title = title
@@ -81,10 +85,10 @@ public class BPCompatibleAlertAction {
     /**
     Helper function to create an instance of BPCompatibleAlertAction with the type of Default.
     
-    :param: title The title of the button.
-    :param: handler The block to be called when the button is pressed.
+    - parameter title: The title of the button.
+    - parameter handler: The block to be called when the button is pressed.
     
-    :returns: The created action.
+    - returns: The created action.
     */
     class func defaultActionWithTitle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)?) -> BPCompatibleAlertAction {
         return BPCompatibleAlertAction(title: title, actionStyle: BPCompatibleAlertActionStyle.Default, handler: handler)
@@ -93,10 +97,10 @@ public class BPCompatibleAlertAction {
     /**
     Helper function to create an instance of BPCompatibleAlertAction with the type of Cancel.
     
-    :param: title The title of the button.
-    :param: handler The block to be called when the button is pressed.
+    - parameter title: The title of the button.
+    - parameter handler: The block to be called when the button is pressed.
     
-    :returns: The created action.
+    - returns: The created action.
     */
     class func cancelActionWithTitle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)?) -> BPCompatibleAlertAction {
         return BPCompatibleAlertAction(title: title, actionStyle: BPCompatibleAlertActionStyle.Cancel, handler: handler)
@@ -105,10 +109,10 @@ public class BPCompatibleAlertAction {
     /**
     Helper function to create an instance of BPCompatibleAlertAction with the type of Desctructive.
     
-    :param: title The title of the button.
-    :param: handler The block to be called when the button is pressed.
+    - parameter title: The title of the button.
+    - parameter handler: The block to be called when the button is pressed.
     
-    :returns: The created action.
+    - returns: The created action.
     */
     class func destructiveActionWithTItle(title: String?, handler: ((BPCompatibleAlertAction!) -> Void)?) -> BPCompatibleAlertAction {
         return BPCompatibleAlertAction(title: title, actionStyle: BPCompatibleAlertActionStyle.Destructive, handler: handler)
